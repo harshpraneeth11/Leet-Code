@@ -43,24 +43,52 @@ It is because for a fixed L, we have n-j substrings. It is L dependent
 As we increase L by one each time
 
 ```cpp
+// 1st : we add count before moving l : this is there in inside while loop during shrinking
+// 2nd : we add count before moving r : this is there at the end of block
+
 class Solution {
 public:
-    unordered_map <int, int> ump;
-    bool valid() {
-        if(ump[0] && ump[1] && ump[2]) return true;
-        return false;
-    }
-
     int numberOfSubstrings(string s) {
-        int i = 0, j = 0, n = s.length(), ans = 0;
-        for(j=0; j<n; j++) {
-            ump[s[j]-'a']++;
-            while(valid()) { 
-                ans = ans + (n-j);
-                ump[s[i]-'a']--;  
-                i++;
+        int n = s.size(), l = 0, ans = 0;
+        vector<int> cnt(3, 0);
+
+        for (int r = 0; r < n; r++) {
+            cnt[s[r] - 'a']++;  // expand window
+
+            while (cnt[0] && cnt[1] && cnt[2]) {
+                ans += (n - r); // all extensions [l..r] to [l..n-1] are valid
+                cnt[s[l] - 'a']--;
+                l++;            // shrink window
             }
         }
+
+        return ans;
+    }
+};
+/// ____________________________
+```
+```cpp
+// 2nd : we add count before moving r : this is there at the end of block
+
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int n = s.size(), l = 0, ans = 0;
+        vector<int> cnt(3, 0);
+
+        for (int r = 0; r < n; r++) {
+            cnt[s[r] - 'a']++;  // expand window
+
+            // shrink while window contains a, b, c
+            while (cnt[0] && cnt[1] && cnt[2]) {
+                cnt[s[l] - 'a']--;
+                l++;
+            }
+
+            // valid starts: 0 ... l-1 for this fixed r
+            ans += l;
+        }
+
         return ans;
     }
 };
