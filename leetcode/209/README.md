@@ -74,20 +74,22 @@ public:
 // Author: github.com/lzl124631x
 // Time: O(N)
 // Space: O(1)
-class Solution {
-public:
-    int minSubArrayLen(int target, vector<int>& A) {
-        int sum = 0, N = A.size(), i = 0, j = 0, ans = INT_MAX;
-        while (j < N) {
-            sum += A[j++];
-            while (sum >= target) {
-                ans = min(ans, j - i);
-                sum -= A[i++];
-            }
+
+int minSubArrayLen(int target, vector<int>& nums) {
+    int l = 0, r = 0, n = nums.size(), sum = 0, ans = INT_MAX;
+    while(r < n) {
+        sum += nums[r];
+        r++;
+
+        // shrink only when condition become true
+        while(sum >= target){
+            ans = min(ans, r-l);
+            sum -= nums[l];
+            l++;
         }
-        return ans == INT_MAX ? 0 : ans;
     }
-};
+    return (ans == INT_MAX) ? 0 : ans;    
+}
 ```
 
 ## Solution 3. Binary Search
