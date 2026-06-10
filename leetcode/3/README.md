@@ -42,30 +42,7 @@
 * [Longest Substring with At Most K Distinct Characters (Hard)](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/)
 * [Subarrays with K Different Integers (Hard)](https://leetcode.com/problems/subarrays-with-k-different-integers/)
 
-## Solution 1. Hash Map
-
-```cpp
-// OJ: https://leetcode.com/problems/longest-substring-without-repeating-characters/
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(C) where C is the range of character set
-// Ref: https://discuss.leetcode.com/topic/24739/c-code-in-9-lines
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        int ans = 0, start = -1;
-        vector<int> m(128, -1);
-        for (int i = 0; i < s.size(); ++i) {
-            start = max(start, m[s[i]]);
-            m[s[i]] = i;
-            ans = max(ans, i - start);
-        }
-        return ans;
-    }
-};
-```
-
-## Solution 2. Sliding Window
+## Solution 1. Sliding Window
 
 Check out "[C++ Maximum Sliding Window Cheatsheet Template!](https://leetcode.com/problems/frequency-of-the-most-frequent-element/discuss/1175088/C%2B%2B-Maximum-Sliding-Window-Cheatsheet-Template!)".
 
@@ -76,41 +53,22 @@ Shrinkable Sliding Window:
 // Author: github.com/lzl124631x
 // Time: O(N)
 // Space: O(C)
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        int i = 0, j = 0, N = s.size(), cnt[128] = {}, dup = 0, ans = 0;
-        while (j < N) {
-            dup += ++cnt[s[j++]] == 2;
-            while (dup) dup -= --cnt[s[i++]] == 1;
-            ans = max(ans, j - i);
+int lengthOfLongestSubstring(string s) {
+    unordered_map<char, int> last;
+    int l = 0, ans = 0;
+
+    for (int r = 0; r < s.size(); r++) {
+        if (last.count(s[r]) && last[s[r]] >= l) {
+            l = last[s[r]] + 1;
         }
-        return ans;
+
+        last[s[r]] = r;
+        ans = max(ans, r - l + 1);
     }
-};
+
+    return ans;
+}
 ```
-
-Non-shrinable Sliding Window:
-
-
-```cpp
-// OJ: https://leetcode.com/problems/longest-substring-without-repeating-characters/
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(C)
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        int i = 0, j = 0, N = s.size(), cnt[128] = {}, dup = 0;
-        while (j < N) {
-            dup += ++cnt[s[j++]] == 2;
-            if (dup) dup -= --cnt[s[i++]] == 1;
-        }
-        return j - i;
-    }
-};
-```
-
 ## Discuss
 
 https://leetcode.com/problems/longest-substring-without-repeating-characters/discuss/1499836/C%2B%2B-Sliding-Window-(%2B-Cheat-Sheet)
