@@ -44,51 +44,35 @@ Shrinkable Sliding Window:
 // Time: O(N)
 // Space: O(1)
 
-int kDistinctChars(int k, string &s) {
-    int i = 0, j = 0, n = s.size(), cnt = 0, ans = 0;
-    unordered_map<int, int> ump;
+class Solution {
+public:
+    int lengthOfLongestSubstringKDistinct(string s, int k) {
+        if (k == 0) return 0;
 
-    for (j = 0; j < n; j++) {
-        ump[s[j]]++;
-        if (ump[s[j]] == 1) cnt++;
+        unordered_map<char, int> freq;
 
-        while (cnt > k) {
-            ump[s[i]]--;
-            if (ump[s[i]] == 0) cnt--;
-            i++;
+        int left = 0, right = 0;
+        int best = 0;
+
+        while (right < s.size()) {
+            char c = s[right++];
+            freq[c]++;
+
+            // shrink if more than k distinct
+            while (freq.size() > k) {
+                char lc = s[left++];
+                freq[lc]--;
+
+                if (freq[lc] == 0)
+                    freq.erase(lc);
+            }
+
+            best = max(best, right - left);
         }
-        ans = max(ans, j - i + 1);
+
+        return best;
     }
-    return ans;
-}
-
-```
-
-Non-shrinkable Sliding Window:
-
-```cpp
-// OJ: https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(1)
-
-int kDistinctChars(int k, string &s) {
-    int i = 0, j = 0, n = s.size(), cnt = 0, ans = 0;
-    unordered_map<int, int> ump;
-
-    for (j = 0; j < n; j++) {
-        ump[s[j]]++;
-        if (ump[s[j]] == 1) cnt++;
-
-        if (cnt > k) {
-            ump[s[i]]--;
-            if (ump[s[i]] == 0) cnt--;
-            i++;
-        }
-        ans = max(ans, j - i + 1);
-    }
-    return j-i;		// At the end, j becomes n instead of n-1, so we don't write j-i+1
-}
+};
 ```
 
 ## Discuss
