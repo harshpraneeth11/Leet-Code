@@ -41,49 +41,7 @@
 [Array](https://leetcode.com/tag/array/), [Hash Table](https://leetcode.com/tag/hash-table/), [Math](https://leetcode.com/tag/math/), [Sliding Window](https://leetcode.com/tag/sliding-window/)
 
 
-## Solution 1. Prefix State Map
-
-```cpp
-class Solution {
-public:
-    int numberOfSubarrays(vector<int>& A, int k) {
-        unordered_map<int, int> m{{0, 1}}; // cnt -> number of occurrences of this cnt
-        int cnt = 0, ans = 0;
-        for (int i = 0; i < A.size(); ++i) {
-            cnt += A[i] % 2;
-            ans += m.count(cnt - k) ? m[cnt - k] : 0;
-            m[cnt]++;
-        }
-        return ans;
-    }
-};
-```
-
-## Solution 2. Two Pointers
-
-```cpp
-// OJ: https://leetcode.com/problems/count-number-of-nice-subarrays/
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(1)
-class Solution {
-public:
-    int numberOfSubarrays(vector<int>& A, int k) {
-        int N = A.size(), i = 0, j = 0, prev = -1, ans = 0, ci = 0, cj = 0;
-        while (j < N) {
-            cj += A[j++] % 2;
-            if (ci <= cj - k) {
-                prev = i;
-                while (ci <= cj - k) ci += A[i++] % 2;
-            }
-            if (cj >= k) ans += i - prev;
-        }
-        return ans;
-    }
-};
-```
-
-## Solution 3. AtMost to Equal + Find Maximum Sliding Window
+## Solution 1. AtMost to Equal + Find Maximum Sliding Window
 
 Check out "[C++ Maximum Sliding Window Cheatsheet Template!](https://leetcode.com/problems/frequency-of-the-most-frequent-element/discuss/1175088/C%2B%2B-Maximum-Sliding-Window-Cheatsheet-Template!)"
 
@@ -92,34 +50,55 @@ Exactly `k` times = At Most `k` times - At Most `k - 1` times.
 ```cpp
 class Solution {
 public:
-    int numberOfSubarrays(vector<int>& A, int goal) {
-        int n = A.size();
-        int i = 0, j = 0, cnt1 = 0, cnt2 = 0, count = 0;
 
-        for (int end = 0; end < n; ++end) {
-            cnt1 += A[end] % 2;
-            cnt2 += A[end] % 2;
+    int atMostK(vector<int>& nums, int k) {
+        int left = 0, right = 0;
+        int ans = 0;
 
-            // Adjust window `i` to have exactly `goal` odd numbers
-            while (i <= end && cnt1 > goal) {
-                cnt1 -= A[i++] % 2;
+        while (right < nums.size()) {
+            if (nums[right] % 2) k--;
+            right++;
+
+            while (k < 0) {
+                if (nums[left] % 2) k++;
+                left++;
             }
 
-            // Adjust window `j` to have at most `goal - 1` odd numbers
-            while (j <= end && cnt2 > goal - 1) {
-                cnt2 -= A[j++] % 2;
-            }
-
-            // If the cnt1 window has exactly `goal` odd numbers, all subarrays starting from indices in range [j, i] to `end` have `goal` odd numbers
-            if (cnt1 == goal) {
-                count += j - i;
-            }
+            ans += right - left;
         }
 
-        return count;
+        return ans;
+    }
+
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        return atMostK(nums, k) - atMostK(nums, k - 1);
     }
 };
+```
+## Solution 2. Prefix State Map
 
+```cpp
+
+// mp[sum-k] means there are those many prefix sum possible from o to l, then l+1 to current
+// have the sum value as k.
+
+class Solution {
+public:
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+        mp[0] = 1;
+
+        int sum = 0, ans = 0;
+
+        for (int x : nums) {
+            sum += (x % 2);
+
+            if (mp.count(sum - k)) ans += mp[sum - k];
+            mp[sum]++;
+        }
+        return ans;
+    }
+};
 ```
 
 ## Discuss
