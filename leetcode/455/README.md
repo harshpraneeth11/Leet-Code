@@ -48,16 +48,28 @@ You need to output 2.
 // Author: github.com/lzl124631x
 // Time: O(MlogM + NlogN)
 // Space: O(1)
-class Solution {
-public:
-    int findContentChildren(vector<int>& g, vector<int>& s) {
-        sort(begin(g), end(g));
-        sort(begin(s), end(s));
-        int i = 0, j = 0, M = g.size(), N = s.size();
-        for (; i < M && j < N; ++j) {
-            if (g[i] <= s[j]) ++i;
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int findContentChildren(vector<int>& g, vector<int>& s) {
+    sort(g.begin(), g.end());
+    sort(s.begin(), s.end());
+
+    int i = 0; // children
+    int j = 0; // cookies
+    int count = 0;
+
+    while (i < g.size() && j < s.size()) {
+        if (s[j] >= g[i]) {
+            count++;
+            i++;
+            j++;
+        } else {
+            j++; // try bigger cookie
         }
-        return i;
     }
-};
+
+    return count;
+}
 ```
