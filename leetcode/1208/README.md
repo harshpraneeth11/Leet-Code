@@ -56,43 +56,27 @@ Shrinkable Sliding Window:
 // Author: github.com/lzl124631x
 // Time: O(N)
 // Space: O(1)
+
 class Solution {
 public:
     int equalSubstring(string s, string t, int maxCost) {
-        int i = 0, j = 0, N = s.size(), cost = 0, ans = 0;
-        for (; j < N; ++j) {
-            cost += abs(s[j] - t[j]);
-            for (; cost > maxCost; ++i) cost -= abs(s[i] - t[i]);
-            ans = max(ans, j - i + 1);
+        int left = 0;
+        int cost = 0;
+        int ans = 0;
+
+        for (int right = 0; right < s.size(); right++) {
+            cost += abs(s[right] - t[right]);
+
+            while (cost > maxCost) {
+                cost -= abs(s[left] - t[left]);
+                left++;
+            }
+
+            ans = max(ans, right - left + 1);
         }
+
         return ans;
     }
 };
+
 ```
-
-Non-shrinkable Sliding Window:
-
-```cpp
-// OJ: https://leetcode.com/problems/get-equal-substrings-within-budget/
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(1)
-class Solution {
-public:
-    int equalSubstring(string s, string t, int maxCost) {
-        int i = 0, j = 0, N = s.size(), cost = 0;
-        for (; j < N; ++j) {
-            cost += abs(s[j] - t[j]);
-            if (cost > maxCost) {
-                cost -= abs(s[i] - t[i]);
-                ++i;
-            }
-        }
-        return j - i;
-    }
-};
-```
-
-## Discuss
-
-https://leetcode.com/problems/get-equal-substrings-within-budget/discuss/1529234/C%2B%2B-Sliding-Window-(%2B-Cheat-Sheet)
