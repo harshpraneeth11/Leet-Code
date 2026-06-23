@@ -44,15 +44,23 @@ Each maximum window `[i, j]` can generate `j - i + 1` valid subarrays, so we nee
 // Space: O(1)
 class Solution {
 public:
-    int numSubarrayProductLessThanK(vector<int>& A, int k) {
-        if (k == 0) return 0;
-        long i = 0, j = 0, N = A.size(), prod = 1, ans = 0;
-        for (; j < N; ++j) {
-            prod *= A[j];
-            while (i <= j && prod >= k) prod /= A[i++];
-            ans += j - i + 1;        // For each 'j', we have [i, j] elements possible
+    int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+        if (k <= 1) return 0;
+
+        int left = 0;
+        long long product = 1;
+        int count = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+            product *= nums[right];
+
+            while (product >= k) {
+                product /= nums[left];
+                left++;
+            }
+            count += right - left + 1;
         }
-        return ans;
+        return count;
     }
 };
 ```
