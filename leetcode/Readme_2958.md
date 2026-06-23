@@ -34,21 +34,23 @@ Constraints:
 ## Solution 1.
 ```cpp
 class Solution {
-    public:
-        int maxSubarrayLength(vector<int>& nums, int k) {
-            int i = 0, j = 0, cnt = 0, n = nums.size();
-            unordered_map<int, int> mp;
-    
-            for (j = 0; j < n; ++j) {
-                int cur = nums[j];
-                mp[cur]++;
-                while (i < j && mp[cur] > k) {
-                    mp[nums[i]]--;
-                    i++;
-                }
-                cnt = max(cnt, j - i + 1); // j - i + 1 to include the current element in the subarray
+public:
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        unordered_map<int, int> freq;
+        int left = 0;
+        int ans = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+            freq[nums[right]]++;
+
+            while (freq[nums[right]] > k) {
+                freq[nums[left]]--;
+                left++;
             }
-            return cnt;
+
+            ans = max(ans, right - left + 1);
         }
+        return ans;
+    }
 };
 ```
