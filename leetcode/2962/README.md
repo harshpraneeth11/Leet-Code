@@ -60,7 +60,10 @@ public:
 
 ## Solution 2. Find Minimum Sliding Window
 
-ans += i, For that particular j, we have i possible sub arrays 
+while(window is valid){
+    ans += something;
+    shrink left;
+}
 
 ```cpp
 
@@ -68,18 +71,27 @@ ans += i, For that particular j, we have i possible sub arrays
 // Space: O(N)
 class Solution {
 public:
-    long long countSubarrays(vector<int>& A, int k) {
-        long long N = A.size(), ans = 0, cnt = 0, mx = *max_element(begin(A), end(A)), i = 0, j = 0;
-        for (; j < N; ++j) {
-            cnt += A[j] == mx;
-            while (cnt >= k) cnt -= A[i++] == mx;
-            ans += i;
+    long long countSubarrays(vector<int>& nums, int k) {
+        int mx = *max_element(nums.begin(), nums.end());
+
+        long long ans = 0;
+        int left = 0;
+        int cnt = 0;
+        int n = nums.size();
+
+        for (int right = 0; right < n; right++) {
+            if (nums[right] == mx)  cnt++;
+
+            while (cnt >= k) {
+                ans += (n - right);
+                if (nums[left] == mx)  cnt--;
+                left++;
+            }
         }
         return ans;
     }
 };
 ```
-
 ## Discuss
 
 https://leetcode.com/problems/count-subarrays-where-max-element-appears-at-least-k-times/solutions/4384450/map-of-first-occurrence-o-n-time/
