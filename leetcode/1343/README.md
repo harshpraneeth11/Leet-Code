@@ -57,16 +57,29 @@
 // Author: github.com/lzl124631x
 // Time: O(N)
 // Space: O(1)
+
 class Solution {
 public:
     int numOfSubarrays(vector<int>& arr, int k, int threshold) {
-        int sum = 0, cnt = 0;
-        for (int i = 0; i < arr.size(); ++i) {
+        int target = k * threshold;
+        int sum = 0;
+
+        for (int i = 0; i < k; i++) {
             sum += arr[i];
-            if (i >= k) sum -= arr[i - k];
-            if (i + 1 >= k && sum / k >= threshold) ++cnt;
         }
-        return cnt;
+
+        int count = 0;
+        if (sum >= target) count++;
+
+        for (int i = k; i < arr.size(); i++) {
+            sum += arr[i] - arr[i - k];
+
+            if (sum >= target) count++;
+            }
+        }
+
+        return count;
     }
 };
+
 ```
