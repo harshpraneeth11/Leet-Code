@@ -110,6 +110,12 @@ public:
 // Space: O(1)
 // There is no option of decrement, so we can only increase till nums[r]
 
+
+If 1st step is not possible, after r=1 from r=0, l also changes to l=1 from l=0
+and suppose the possible answer is ans = 5, then for next step if not possible l++ and r++, so ans=5
+Only if it is valid, l is at same place and r++, so ans++
+No need to use return j-i
+
 class Solution {
 public:
     int maxFrequency(vector<int>& nums, int k) {
