@@ -52,20 +52,35 @@ If the front needs to be removed (q.front() = i-k), do pop_front
 At last, push the q.front() value to the answer vector
 
 ```cpp
+// indices will be in 2 4 7 10 order and the values are also nums[2] < nums[4] < nums[7] < nums[10] 
+
 class Solution {
 public:
-    vector<int> maxSlidingWindow(vector<int>& A, int k) {
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque<int> dq;
         vector<int> ans;
-        deque<int> q;
-        for (int i = 0; i < A.size(); ++i) {
-            while (q.size() && A[q.back()] <= A[i]) q.pop_back();	// important
-            q.push_back(i);
-            if (q.front() == i - k) q.pop_front();
-            if (i >= k - 1) ans.push_back(A[q.front()]);
+
+        for (int i = 0; i < nums.size(); i++) {
+
+            // Remove out-of-window indices as i - k + 1 to i will be the current window
+            if (!dq.empty() && dq.front() <= i - k)
+                dq.pop_front();
+
+            // Maintain decreasing order
+            while (!dq.empty() && nums[dq.back()] <= nums[i])
+                dq.pop_back();
+
+            dq.push_back(i);
+
+            // A window can be formed of size k, only if i >= k-1
+            if (i >= k - 1)
+                ans.push_back(nums[dq.front()]);
         }
+
         return ans;
     }
 };
+
 ```
 
 ## Solution 2. Mono-Deque
