@@ -51,40 +51,34 @@ This problem is equivalent to "finding the longest subarray that sums to `sum(A)
 // Author: github.com/lzl124631x
 // Time: O(N)
 // Space: O(1)
-class Solution {
-public:
-    int minOperations(vector<int>& A, int x) {
-        int N = A.size(), i = 0, j = 0, sum = 0, target = accumulate(begin(A), end(A), 0) - x, maxLen = -1;
-        if (target < 0) return -1;
-        for (; j < N; ++j) {
-            sum += A[j];
-            while (sum > target) sum -= A[i++];
-            if (sum == target) maxLen = max(maxLen, j - i + 1);
-        }
-        return maxLen == -1 ? -1 : (N - maxLen);
-    }
-};
-```
-## Solution 2. Two pointers
 
-```cpp
-// OJ: https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero
-// Author: github.com/lzl124631x
-// Time: O(N)
-// Space: O(1)
 class Solution {
 public:
-    int minOperations(vector<int>& A, int x) {
-        int ans = INT_MAX, sum = 0, N = A.size(), i = 0, j = N - 1;
-        for (; i < N && sum < x; ++i) sum += A[i];
-        if (sum < x) return -1;
-        if (sum == x) ans = i;
-        while (i > 0) {
-            sum -= A[--i];
-            while (i <= j && sum < x) sum += A[j--];
-            if (sum == x) ans = min(ans, i + N - j - 1);
+    int minOperations(vector<int>& nums, int x) {
+        int n = nums.size();
+        long long total = 0;
+        for (int v : nums) total += v;
+        long long target = total - x;
+        if (target < 0) return -1;
+
+        long long sum = 0;
+        int l = 0;
+        int best = -1;
+
+        for (int r = 0; r < n; r++) {
+            sum += nums[r];
+
+            while (sum > target) {
+                sum -= nums[l];
+                l++;
+            }
+
+            if (sum == target) {
+                best = max(best, r - l + 1);
+            }
         }
-        return ans == INT_MAX ? -1 : ans;
+
+        return best == -1 ? -1 : n - best;
     }
 };
 ```
