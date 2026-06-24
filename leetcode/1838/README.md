@@ -74,16 +74,28 @@ Then the window `[i, j]` with length `j - i + 1` is the maximum window we've see
 // Author: github.com/lzl124631x
 // Time: O(NlogN)
 // Space: O(1)
+// There is no option of decrement, so we can only increase till nums[r]
+
 class Solution {
 public:
-    int maxFrequency(vector<int>& A, int k) {
-        sort(begin(A), end(A));
-        long i = 0, N = A.size(), ans = 1, sum = 0;
-        for (int j = 0; j < N; ++j) {
-            sum += A[j];
-            while ((j - i + 1) * A[j] - sum > k) sum -= A[i++];
-            ans = max(ans, j - i + 1);
+    int maxFrequency(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+
+        long long sum = 0;
+        int l = 0;
+        int ans = 1;
+
+        for (int r = 0; r < nums.size(); r++) {
+            sum += nums[r];
+
+            while ((long long)nums[r] * (r - l + 1) - sum > k) {
+                sum -= nums[l];
+                l++;
+            }
+
+            ans = max(ans, r - l + 1);
         }
+
         return ans;
     }
 };
@@ -96,16 +108,29 @@ public:
 // Author: github.com/lzl124631x
 // Time: O(NlogN)
 // Space: O(1)
+// There is no option of decrement, so we can only increase till nums[r]
+
 class Solution {
 public:
-    int maxFrequency(vector<int>& A, int k) {
-        sort(begin(A), end(A));
-        long i = 0, j = 0, N = A.size(), sum = 0;
-        for (; j < N; ++j) {
-            sum += A[j];
-            if ((j - i + 1) * A[j] - sum > k) sum -= A[i++];
+    int maxFrequency(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+
+        long long sum = 0;
+        int l = 0;
+        int ans = 1;
+
+        for (int r = 0; r < nums.size(); r++) {
+            sum += nums[r];
+
+            if ((long long)nums[r] * (r - l + 1) - sum > k) {		// while changed to if
+                sum -= nums[l];
+                l++;
+            }
+
+            ans = max(ans, r - l + 1);
         }
-        return j - i;
+
+        return ans;
     }
 };
 ```
