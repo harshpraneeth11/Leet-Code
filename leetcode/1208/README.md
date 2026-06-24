@@ -67,6 +67,7 @@ public:
         for (int right = 0; right < s.size(); right++) {
             cost += abs(s[right] - t[right]);
 
+			// while can be changed to if and made non shrinkabale window
             while (cost > maxCost) {
                 cost -= abs(s[left] - t[left]);
                 left++;
